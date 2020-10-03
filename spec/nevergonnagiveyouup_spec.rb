@@ -1,6 +1,6 @@
-RSpec.describe Nevergonnagiveyouup do
+RSpec.describe samo_kontrola do
   it "has a version number" do
-    expect(Nevergonnagiveyouup::VERSION).not_to be nil
+    expect(samo_kontrola::VERSION).not_to be nil
   end
 
   it "does something useful" do

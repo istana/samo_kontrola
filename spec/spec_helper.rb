@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "nevergonnagiveyouup"
+require "samo_kontrola"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

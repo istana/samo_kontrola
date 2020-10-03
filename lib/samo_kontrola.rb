@@ -1,6 +1,6 @@
-require "nevergonnagiveyouup/version"
+require "samo_kontrola/version"
 
-module Nevergonnagiveyouup
+module SamoKontrola
   class Error < StandardError; end
   # Your code goes here...
 end
