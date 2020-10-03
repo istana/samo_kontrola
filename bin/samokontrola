@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require 'optparse'
+require "samo_kontrola"
+
+options = {}
+
+o = OptionParser.new do |opts|
+  opts.banner = "Usage: samokontrola options"
+
+  opts.on("-f", "--file FILE", "Specify JSON FILE with checks") do |file_name|
+    options[:file_name] = file_name.strip
+  end
+
+  opts.on_tail("-h", "--help", "show this message") do
+    puts opts
+    exit(1)
+  end
+
+end
+
+begin
+  o.parse!
+rescue OptionParser::MissingArgument
+  puts o.help
+  exit(1)
+end
+
+puts 'blah'
+puts options.inspect

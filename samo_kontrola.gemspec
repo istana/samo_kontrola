@@ -5,7 +5,7 @@ require "samo_kontrola/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "samo_kontrola"
-  spec.version       = samo_kontrola::VERSION
+  spec.version       = SamoKontrola::VERSION
   spec.authors       = ["Ivan Stana"]
   spec.email         = ["^_^@myrtana.sk"]
 
