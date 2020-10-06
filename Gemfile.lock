@@ -2,7 +2,10 @@ PATH
   remote: .
   specs:
     samo_kontrola (0.1.0)
+      bcrypt_pbkdf
       dnsruby (~> 1.61)
+      ed25519
+      net-ssh (~> 6.0)
       whois-parser (~> 1.2)
 
 GEM
@@ -14,13 +17,16 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    bcrypt_pbkdf (1.0.1)
     concurrent-ruby (1.1.7)
     diff-lcs (1.4.4)
     dnsruby (1.61.4)
       simpleidn (~> 0.1)
+    ed25519 (1.2.4)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     minitest (5.14.2)
+    net-ssh (6.1.0)
     rake (10.5.0)
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
@@ -54,9 +60,9 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 2.0)
-  samo_kontrola!
   rake (~> 10.0)
   rspec (~> 3.0)
+  samo_kontrola!
 
 BUNDLED WITH
    2.1.4

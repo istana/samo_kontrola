@@ -40,6 +40,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "whois-parser", "~> 1.2"
   spec.add_dependency "dnsruby", "~> 1.61"
+  spec.add_dependency "net-ssh", "~> 6.0"
+  spec.add_dependency "ed25519"
+  spec.add_dependency "bcrypt_pbkdf"
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"

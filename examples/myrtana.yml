@@ -1,0 +1,10 @@
+- host: myrtana.sk
+  ssh:
+    fingerprint: "f3:b0:0c:be:6b:ed:aa:f6:c7:91:cb:11:99:f1:48:2b"
+
+#- host: karate.myrtana.sk
+
+#- host: devart.myrtana.sk
+
+#- host: minimalisti.myrtana.sk
+

@@ -3,6 +3,9 @@
 Features:
 
 - open ports (ip address, hostname), scan if weird ports are NOT open
+- ping
+- ssh
+  - ssh fingerprint
 - dns (hostname):
   - port, dnssec, dns records
   - query also 1.1.1.1 and 8.8.8.8
@@ -23,6 +26,10 @@ Features:
   - spf
   - dkim
   - dmarc
+- protocols:
+  - ipv4
+  - ipv6
+  - onion
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/samo_kontrola`. To experiment with that code, run `bin/console` for an interactive prompt.
 

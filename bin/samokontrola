@@ -2,6 +2,8 @@
 
 require "bundler/setup"
 require 'optparse'
+require 'rspec'
+require 'yaml'
 require "samo_kontrola"
 
 options = {}
@@ -29,3 +31,24 @@ end
 
 puts 'blah'
 puts options.inspect
+
+checklist = YAML.load_file(options[:file_name])
+puts checklist.inspect
+
+checklist.each do |host_checks|
+  puts host_checks.inspect
+  if host_checks["ssh"]
+    ssh_checks = host_checks["ssh"]
+    if ssh_checks["fingerprint"]
+      RSpec.describe 'SSH' do
+        it 'checks fingerprint of the host' do
+          keys = SamoKontrola::Ssh::Fingerprint.(host: host_checks["host"])
+          expect(keys.size).to eq(1)
+          expect(keys.first).to eq(ssh_checks["fingerprint"])
+        end
+      end
+    end
+  end
+end
+
+RSpec::Core::Runner.run(['.'], $stderr, $stdout)
