@@ -15,7 +15,7 @@ Features:
 - web (hostname - ip addresses taken from dns, ip address):
   - http: port, redirect, content body/response status, response headers
   - https: port, valid certificate, content body/response status, response headers
-  - subdomain
+  - subdomain -> yet another host
 - mail (hostname - ip addresses taken from dns, ip address):
   - pop3: port, test email
   - pop3s: ssl/tls, starttls, valid certificate, port, test email

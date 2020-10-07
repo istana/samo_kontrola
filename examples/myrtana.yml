@@ -1,6 +1,14 @@
 - host: myrtana.sk
   ssh:
     fingerprint: "f3:b0:0c:be:6b:ed:aa:f6:c7:91:cb:11:99:f1:48:2b"
+  #ping:
+  http:
+    content: <p>The document has moved <a href="https://myrtana.sk/">here</a>.</p>
+    status: 301
+  https:
+    content: 'Mind Dump'
+    status: 200
+
 
 #- host: karate.myrtana.sk
 

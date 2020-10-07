@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
+require 'net/http'
 require 'optparse'
 require 'rspec'
 require 'yaml'
@@ -29,19 +30,15 @@ rescue OptionParser::MissingArgument
   exit(1)
 end
 
-puts 'blah'
-puts options.inspect
-
 checklist = YAML.load_file(options[:file_name])
 puts checklist.inspect
 
 checklist.each do |host_checks|
-  puts host_checks.inspect
   if host_checks["ssh"]
     ssh_checks = host_checks["ssh"]
     if ssh_checks["fingerprint"]
       RSpec.describe 'SSH' do
-        it 'checks fingerprint of the host' do
+        it "checks the fingerprint of the host is \"#{ssh_checks['fingerprint']}\"" do
           keys = SamoKontrola::Ssh::Fingerprint.(host: host_checks["host"])
           expect(keys.size).to eq(1)
           expect(keys.first).to eq(ssh_checks["fingerprint"])
@@ -49,6 +46,49 @@ checklist.each do |host_checks|
       end
     end
   end
+
+  if host_checks["http"]
+    http_checks = host_checks["http"]
+
+    RSpec.describe 'HTTP' do
+      uri = URI("http://#{host_checks['host']}")
+      response = Net::HTTP.get_response(uri)
+
+      if http_checks["content"]
+        it "the root URL body contains \"#{http_checks['content']}\"" do
+          expect(response.body).to include(http_checks["content"])
+        end
+      end
+
+      if http_checks["status"]
+        it "the root URL returns HTTP code \"#{http_checks['status'].to_i}\"" do
+          expect(response.code.to_i).to eq(http_checks["status"].to_i)
+        end
+      end
+    end
+  end
+
+  if host_checks["https"]
+    https_checks = host_checks["https"]
+
+    RSpec.describe 'HTTPS' do
+      uri = URI("https://#{host_checks['host']}")
+      response = Net::HTTP.get_response(uri)
+
+      if http_checks["content"]
+        it "the root URL body contains \"#{https_checks['content']}\"" do
+          expect(response.body).to include(https_checks["content"])
+        end
+      end
+
+      if http_checks["status"]
+        it "the root URL returns HTTP code \"#{https_checks['status'].to_i}\"" do
+          expect(response.code.to_i).to eq(https_checks["status"].to_i)
+        end
+      end
+    end
+  end
+
 end
 
 RSpec::Core::Runner.run(['.'], $stderr, $stdout)
