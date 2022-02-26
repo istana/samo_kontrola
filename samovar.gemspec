@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{RSpec matchers to check server configuration from the outside}
   spec.description   = %q{RSpec matchers to check server configuration from the outside}
   spec.homepage      = "https://github.com/istana/samovar"
-  spec.license       = "MIT"
+  spec.license       = "GPL-3.0-or-later"
 
 =begin
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
