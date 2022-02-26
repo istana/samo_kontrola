@@ -56,7 +56,7 @@
 
 require 'net/ssh'
 
-module SamoKontrola
+module Samovar
   module Ssh
     module Fingerprint
       def self.call(host:)

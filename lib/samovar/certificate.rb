@@ -1,4 +1,4 @@
-module samo_kontrola
+module Samovar
   class Certificate
     def new(host, port)
       @socket = TCPSocket.new(host, port)

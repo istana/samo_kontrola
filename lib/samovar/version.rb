@@ -1,3 +1,3 @@
-module SamoKontrola
+module Samovar
   VERSION = "0.1.0"
 end

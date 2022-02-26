@@ -4,9 +4,10 @@ require "bundler/setup"
 require 'dnsruby'
 require 'net/http'
 require 'optparse'
+require 'ostruct'
 require 'rspec'
 require 'yaml'
-require "samo_kontrola"
+require "samovar"
 
 options = {}
 
@@ -32,6 +33,13 @@ rescue OptionParser::MissingArgument
 end
 
 checklist = YAML.load_file(options[:file_name])
+
+RSpec.configure do |config|
+  config.full_backtrace = false
+  config.backtrace_inclusion_patterns = [
+      /samo/
+  ]
+end
 
 checklist.each do |host_checks|
   RSpec.describe host_checks["host"] do
@@ -73,12 +81,17 @@ checklist.each do |host_checks|
       https_checks = host_checks["https"]
 
       describe 'HTTPS' do
-        uri = URI("https://#{host_checks['host']}")
-        response = Net::HTTP.get_response(uri)
+        begin
+          uri = URI("https://#{host_checks['host']}")
+          response = Net::HTTP.get_response(uri)
+        rescue OpenSSL::SSL::SSLError => e
+          response = OpenStruct.new(code: 0, body: 'system: SSL certificate is NOT VALID')
+        end
 
         if http_checks["content"]
           it "the root URL body contains \"#{https_checks['content']}\"" do
-            expect(response.body).to include(https_checks["content"])
+            # net/http sets to ascii sometimes even for utf-8 response
+            expect(response.body.force_encoding(Encoding::UTF_8)).to include(https_checks["content"])
           end
         end
 

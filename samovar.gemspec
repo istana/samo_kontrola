@@ -1,17 +1,17 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "samo_kontrola/version"
+require "samovar/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "samo_kontrola"
-  spec.version       = SamoKontrola::VERSION
+  spec.name          = "samovar"
+  spec.version       = Samovar::VERSION
   spec.authors       = ["Ivan Stana"]
   spec.email         = ["^_^@myrtana.sk"]
 
   spec.summary       = %q{RSpec matchers to check server configuration from the outside}
   spec.description   = %q{RSpec matchers to check server configuration from the outside}
-  spec.homepage      = "https://github.com/istana/samo_kontrola"
+  spec.homepage      = "https://github.com/istana/samovar"
   spec.license       = "MIT"
 
 =begin
@@ -38,12 +38,13 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "whois-parser", "~> 1.2"
-  spec.add_dependency "dnsruby", "~> 1.61"
-  spec.add_dependency "net-ssh", "~> 6.0"
-  spec.add_dependency "ed25519"
-  spec.add_dependency "bcrypt_pbkdf"
+  #spec.add_dependency "whois-parser", "~> 1.2"
+  #spec.add_dependency "dnsruby", "~> 1.61"
+  #spec.add_dependency "net-ssh", "~> 6.0"
+  #spec.add_dependency "ed25519"
+  #spec.add_dependency "bcrypt_pbkdf"
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "rake"
+  spec.add_dependency "rspec", "~> 3.0"
 end
