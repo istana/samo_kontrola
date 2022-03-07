@@ -1,5 +1,5 @@
-RSpec.describe SamoKontrola do
+RSpec.describe Samovar do
   it "has a version number" do
-    expect(SamoKontrola::VERSION).not_to be nil
+    expect(Samovar::VERSION).not_to be nil
   end
 end

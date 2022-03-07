@@ -1,3 +1,4 @@
+=begin
 module Samovar
   class Certificate
     def new(host, port)
@@ -7,3 +8,4 @@ module Samovar
     end
   end
 end
+=end

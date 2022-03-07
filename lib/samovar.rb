@@ -1,5 +1,6 @@
-require "samovar/version"
-require "samovar/ssh/fingerprint"
+Dir['./**/*.rb'].each do |f|
+  require f
+end
 
 module Samovar
   class Error < StandardError; end
