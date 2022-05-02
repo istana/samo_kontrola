@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "samovar"
+require "superbear"
 require 'rspec/matchers/fail_matchers'
 
 RSpec.configure do |config|

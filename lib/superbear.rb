@@ -2,6 +2,6 @@ Dir['./**/*.rb'].each do |f|
   require f
 end
 
-module Samovar
+module Superbear
   class Error < StandardError; end
 end

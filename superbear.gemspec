@@ -1,17 +1,17 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "samovar/version"
+require "superbear/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "samovar"
-  spec.version       = Samovar::VERSION
+  spec.name          = "superbear"
+  spec.version       = Superbear::VERSION
   spec.authors       = ["Ivan Stana"]
   spec.email         = ["^_^@myrtana.sk"]
 
   spec.summary       = %q{RSpec matchers to check server configuration from the outside}
   spec.description   = %q{RSpec matchers to check server configuration from the outside}
-  spec.homepage      = "https://github.com/istana/samovar"
+  spec.homepage      = "https://github.com/istana/superbear"
   spec.license       = "GPL-3.0-or-later"
 
 =begin

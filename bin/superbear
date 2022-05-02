@@ -7,7 +7,7 @@ require 'optparse'
 require 'ostruct'
 require 'rspec'
 require 'yaml'
-require "samovar"
+require "superbear"
 
 options = {}
 
@@ -37,7 +37,7 @@ checklist = YAML.load_file(options[:file_name])
 RSpec.configure do |config|
   config.full_backtrace = false
   config.backtrace_inclusion_patterns = [
-      /samo/
+      /superbear/
   ]
 end
 

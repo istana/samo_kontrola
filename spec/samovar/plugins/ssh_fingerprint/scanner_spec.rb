@@ -1,4 +1,4 @@
-RSpec.describe Samovar::Plugins::SshFingerprint::Scanner do
+RSpec.describe Superbear::Plugins::SshFingerprint::Scanner do
   it 'gets a fingerprint for a host' do
     allow(Net::SSH::Transport::Session).to receive(:new).and_return(double(
       host_keys: [
@@ -17,7 +17,7 @@ RSpec.describe Samovar::Plugins::SshFingerprint::Scanner do
       ]
     ))
 
-    expect(Samovar::Plugins::SshFingerprint::Scanner.(host: 'example.com')).to match_array([
+    expect(Superbear::Plugins::SshFingerprint::Scanner.(host: 'example.com')).to match_array([
       {
         ssh_signature_type: 'ecdsa-sha2-nistp256',
         fingerprint: 'f3:b0:0c:be:6b:ed:aa:f6:c7:91:cb:11:99:f1:48:2b',

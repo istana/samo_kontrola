@@ -1,5 +1,5 @@
 =begin
-module Samovar
+module Superbear
   class Certificate
     def new(host, port)
       @socket = TCPSocket.new(host, port)

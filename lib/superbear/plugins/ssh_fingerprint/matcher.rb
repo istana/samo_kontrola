@@ -1,6 +1,6 @@
 RSpec::Matchers.define :have_ssh_fingerprints do |expected_fingerprints|
   match do |host|
-    @actual = Samovar::Plugins::SshFingerprint::Scanner.(host: host)
+    @actual = Superbear::Plugins::SshFingerprint::Scanner.(host: host)
     match_array(expected_fingerprints).matches?(@actual)
   end
 
@@ -11,7 +11,7 @@ RSpec::Matchers.define :have_ssh_fingerprints do |expected_fingerprints|
   end
 
   match_when_negated do |host|
-    @actual = Samovar::Plugins::SshFingerprint::Scanner.(host: host)
+    @actual = Superbear::Plugins::SshFingerprint::Scanner.(host: host)
     @actual.none? {|fingerprint| expected_fingerprints.include?(fingerprint)}
   end
 

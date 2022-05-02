@@ -1,6 +1,6 @@
 require 'net/ssh'
 
-module Samovar
+module Superbear
   module Plugins
     module SshFingerprint
       module Scanner
