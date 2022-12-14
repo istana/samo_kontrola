@@ -52,7 +52,7 @@ RSpec.describe 'Superbear::Plugins::SshFingerprint RSpec matcher' do
   end
 
   describe 'no SSH keys on host' do
-    it 'compares' do
+    it 'checks if SSH fingerprints match' do
       allow(Net::SSH::Transport::Session).to receive(:new).and_return(double(
         host_keys: []
       ))

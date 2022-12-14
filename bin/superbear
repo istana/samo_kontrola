@@ -1,37 +1,39 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
-require 'dnsruby'
-require 'net/http'
+require 'bundler/setup'
 require 'optparse'
-require 'ostruct'
-require 'rspec'
 require 'yaml'
-require "superbear"
+require 'superbear/version'
+
+require 'pry'
 
 options = {}
 
-o = OptionParser.new do |opts|
-  opts.banner = "Usage: samokontrola options"
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{__FILE__} [files]"
+  opts.on("-v", "--[no-]verbose", "use dot or doc formatter, output contains dots or detailed steps and failed checks") do |v|
+    options[:verbose] = v
+  end
 
-  opts.on("-f", "--file FILE", "Specify JSON FILE with checks") do |file_name|
-    options[:file_name] = file_name.strip
+  opts.on_tail("--version", "show version") do
+    puts SuperBear::VERSION
+    exit(1)
   end
 
   opts.on_tail("-h", "--help", "show this message") do
     puts opts
     exit(1)
   end
-
 end
 
 begin
-  o.parse!
+  parser.parse!
 rescue OptionParser::MissingArgument
-  puts o.help
+  puts parser.help
   exit(1)
 end
 
+=begin
 checklist = YAML.load_file(options[:file_name])
 
 RSpec.configure do |config|
@@ -176,3 +178,5 @@ checklist.each do |host_checks|
 end
 
 RSpec::Core::Runner.run(['.'], $stderr, $stdout)
+=end
+
