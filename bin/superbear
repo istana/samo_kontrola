@@ -5,8 +5,6 @@ require 'optparse'
 require 'yaml'
 require 'superbear/version'
 
-require 'pry'
-
 options = {}
 
 parser = OptionParser.new do |opts|
@@ -14,6 +12,15 @@ parser = OptionParser.new do |opts|
   opts.on("-v", "--[no-]verbose", "use dot or doc formatter, output contains dots or detailed steps and failed checks") do |v|
     options[:verbose] = v
   end
+
+  opts.on("-C", "--check-configuration", "check configuration and exit") do |v|
+    options[:verbose] = v
+  end
+
+  opts.on("-l", "--log FILE", "log to a file") do |v|
+    options[:verbose] = v
+  end
+
 
   opts.on_tail("--version", "show version") do
     puts SuperBear::VERSION
@@ -30,6 +37,11 @@ begin
   parser.parse!
 rescue OptionParser::MissingArgument
   puts parser.help
+  exit(1)
+end
+
+if ARGV.size == 0
+  puts 'Specify at least one file definition'
   exit(1)
 end
 
