@@ -1,6 +1,5 @@
-#Dir['./**/*.rb'].each do |f|
-#  require f
-#end
+require 'bundler/setup'
+require_relative 'superbear/plugins'
 
 module Superbear
   class Error < StandardError; end
