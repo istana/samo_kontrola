@@ -1,4 +1,77 @@
 RSpec.describe Superbear::Plugins::HaveSshFingerprint do
+  describe Superbear::Plugins::HaveSshFingerprint::YamlContract do
+    it 'accepts fingerprints to match and not match' do
+      data = {
+        ssh_fingerprint: {
+          match: [
+            {
+              type: 'ecdsa-sha2-nistp256',
+              fingerprint: 'foo',
+            },
+            {
+              type: 'ssh-ed25519',
+              fingerprint: 'bar',
+            }
+          ],
+          not_match: [
+            'fingerprint1',
+            'fingerprint2',
+          ],
+        }
+      }
+
+      result = described_class.new.call(data)
+      expect(result.errors).to be_empty
+      expect(result.to_h).to eq(data)
+    end
+
+    it 'accepts empty section' do
+      data = {
+        ssh_fingerprint: {
+        }
+      }
+
+      expect(described_class.new.call(data).errors).to be_empty
+    end
+
+    it 'rejects empty data' do
+      data = {
+      }
+
+      expect(described_class.new.call(data).errors).not_to be_empty
+    end
+
+    it 'requires type' do
+      data = {
+        ssh_fingerprint: {
+          match: [
+            {
+              fingerprint: 'foo',
+            },
+          ],
+        }
+      }
+
+      result = described_class.new.call(data)
+      expect(described_class.new.call(data).errors).not_to be_empty
+    end
+
+    it 'requires fingerprint' do
+      data = {
+        ssh_fingerprint: {
+          match: [
+            {
+              fingerprint: 'foo',
+            },
+          ],
+        }
+      }
+
+      result = described_class.new.call(data)
+      expect(described_class.new.call(data).errors).not_to be_empty
+    end
+  end
+
   describe '.get_fingerprints' do
     it 'returns keys containing type and fingerprint' do
       allow(Net::SSH::Transport::Session).to receive(:new).and_return(double(

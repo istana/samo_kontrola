@@ -1,8 +1,38 @@
 require 'net/ssh'
-require 'rspec'
+require 'rspec/core'
+require 'dry-validation'
 
 class Superbear::Plugins::HaveSshFingerprint
+  class YamlContract < Dry::Validation::Contract
+    params do
+      required(:ssh_fingerprint).hash do
+        optional(:not_match).array(:string)
+        optional(:match).array(:hash) do
+          required(:type).value(:string)
+          required(:fingerprint).value(:string)
+        end
+      end
+    end
+  end
+
   class << self
+    def validate_input_data!(yaml_data)
+      contract = YamlContract.new
+      contract.call(yaml_data)
+    end
+
+    def load_to_rspec!(host, definitions)
+      RSpec.define(host) do
+        it 'checks SSH fingerprints for match' do
+          expect(host).to have_ssh_fingerprints(definitions.dig(:ssh_fingerprint, :match))
+        end
+
+        it 'checks SSH fingerprints to not be present' do
+          expect(host).not_to have_ssh_fingerprints(definitions.dig(:ssh_fingerprint, :exclude))
+        end
+      end
+    end
+
     def get_fingerprints(host)
       transport = Net::SSH::Transport::Session.new(host)
       transport.host_keys.map do |key|
