@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'optparse'
 require 'yaml'
 require 'superbear/version'
+require 'rspec/core'
 
 options = {}
 
@@ -45,15 +46,23 @@ if ARGV.size == 0
   exit(1)
 end
 
-=begin
-checklist = YAML.load_file(options[:file_name])
-
 RSpec.configure do |config|
   config.full_backtrace = false
   config.backtrace_inclusion_patterns = [
       /superbear/
   ]
 end
+
+
+configuration.files.each do |filename|
+  file_yaml = YAML.load_file(filename)
+  checklist = Superbear::Checklist.new(file_yaml)
+
+  checklist.hosts.each do |host, plugin|
+
+  end
+end
+=begin
 
 checklist.each do |host_checks|
   RSpec.describe host_checks["host"] do
@@ -189,6 +198,7 @@ checklist.each do |host_checks|
   end
 end
 
-RSpec::Core::Runner.run(['.'], $stderr, $stdout)
 =end
 
+rundir = File.expand_path('../../rundir', __FILE__)
+RSpec::Core::Runner.run([rundir], $stderr, $stdout)
