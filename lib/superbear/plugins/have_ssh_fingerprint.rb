@@ -3,7 +3,7 @@ require 'rspec/core'
 require 'dry-validation'
 
 class Superbear::Plugins::HaveSshFingerprint
-  class YamlContract < Dry::Validation::Contract
+  class InputDataContract < Dry::Validation::Contract
     params do
       required(:ssh_fingerprint).hash do
         optional(:not_match).array(:string)
@@ -12,6 +12,24 @@ class Superbear::Plugins::HaveSshFingerprint
           required(:fingerprint).value(:string)
         end
       end
+    end
+  end
+
+  module Matcher
+    extend RSpec::Matchers::DSL
+
+    matcher :have_ssh_fingerprints do |expected_fingerprints|
+      match do |host|
+        @actual = Superbear::Plugins::HaveSshFingerprint.get_fingerprints(host: host)
+        match_array(expected_fingerprints).matches?(@actual)
+      end
+
+      match_when_negated do |host|
+        @actual = Superbear::Plugins::HaveSshFingerprint.get_fingerprints(host: host).map{|key| key[:fingerprint]}
+        @actual.none? {|fingerprint| expected_fingerprints.include?(fingerprint)}
+      end
+
+      diffable
     end
   end
 
@@ -33,7 +51,7 @@ class Superbear::Plugins::HaveSshFingerprint
       end
     end
 
-    def get_fingerprints(host)
+    def get_fingerprints(host:)
       transport = Net::SSH::Transport::Session.new(host)
       transport.host_keys.map do |key|
         {
@@ -41,20 +59,6 @@ class Superbear::Plugins::HaveSshFingerprint
           fingerprint: key.fingerprint,
         }
       end
-    end
-
-    RSpec::Matchers.define :have_ssh_fingerprints do |expected_fingerprints|
-      match do |host|
-        @actual = Superbear::Plugins::HaveSshFingerprint.get_fingerprints(host: host)
-        match_array(expected_fingerprints).matches?(@actual)
-      end
-
-      match_when_negated do |host|
-        @actual = Superbear::Plugins::HaveSshFingerprint.get_fingerprints(host: host).map{|key| key[:fingerprint]}
-        @actual.none? {|fingerprint| expected_fingerprints.include?(fingerprint)}
-      end
-
-      diffable
     end
   end
 end
