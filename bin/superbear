@@ -1,50 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'optparse'
-require 'yaml'
-require 'superbear/version'
 require 'rspec/core'
-
-options = {}
-
-parser = OptionParser.new do |opts|
-  opts.banner = "Usage: #{__FILE__} [files]"
-  opts.on("-v", "--[no-]verbose", "use dot or doc formatter, output contains dots or detailed steps and failed checks") do |v|
-    options[:verbose] = v
-  end
-
-  opts.on("-C", "--check-configuration", "check configuration and exit") do |v|
-    options[:verbose] = v
-  end
-
-  opts.on("-l", "--log FILE", "log to a file") do |v|
-    options[:verbose] = v
-  end
-
-
-  opts.on_tail("--version", "show version") do
-    puts SuperBear::VERSION
-    exit(1)
-  end
-
-  opts.on_tail("-h", "--help", "show this message") do
-    puts opts
-    exit(1)
-  end
-end
-
-begin
-  parser.parse!
-rescue OptionParser::MissingArgument
-  puts parser.help
-  exit(1)
-end
-
-if ARGV.size == 0
-  puts 'Specify at least one file definition'
-  exit(1)
-end
+require 'yaml'
+require 'superbear/configuration'
+require 'superbear/version'
 
 RSpec.configure do |config|
   config.full_backtrace = false
@@ -53,14 +13,14 @@ RSpec.configure do |config|
   ]
 end
 
+configuration = Superbear::Configuration.new(origin_file: __FILE__)
+#require 'pry'
+#binding.pry
 
-configuration.files.each do |filename|
-  file_yaml = YAML.load_file(filename)
-  checklist = Superbear::Checklist.new(file_yaml)
 
-  checklist.hosts.each do |host, plugin|
-
-  end
+checklists = configuration.files.reduce([]) do |result, filename|
+  yaml_file = YAML.load_file(filename)
+  checklist = Superbear::Checklist.new(yaml_file)
 end
 =begin
 

@@ -3,6 +3,6 @@ end
 
 basepath = File.expand_path('..', __FILE__)
 
-Dir["#{basepath}/**/*.rb"].each do |f|
-  require f
+Dir["#{basepath}/**/*.rb"].each do |plugin_file|
+  require plugin_file
 end
