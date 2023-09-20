@@ -1,8 +1,4 @@
-require 'dry-validation'
-require 'dry-types'
-require_relative './types'
 require 'json-schema'
-
 
 class Superbear::HostChecklist
   class InputDataContract
@@ -49,5 +45,9 @@ class Superbear::HostChecklist
 
     @filename = stringified_data['filename']
     @items = stringified_data['data']
+
+    @items.each do |item|
+      
+    end
   end
 end
