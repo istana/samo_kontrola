@@ -4,18 +4,17 @@ require 'bundler/setup'
 require 'yaml'
 require 'superbear/configuration'
 require 'superbear/version'
+require 'superbear/host_checklist'
 
 require 'pry'
-binding.pry
 configuration = Superbear::Configuration.new(executable_name: __FILE__)
 
+checklists = configuration.files.reduce([]) do |result, filename|
+ yaml_file = YAML.safe_load_file(filename)
+ checklist = Superbear::HostChecklist.new(yaml_file)
+end
 
-
-#checklists = configuration.files.reduce([]) do |result, filename|
-#  yaml_file = YAML.load_file(filename)
-#  checklist = Superbear::Checklist.new(yaml_file)
-#end
-
+binding.pry
 
 #checklist.each do ||
 

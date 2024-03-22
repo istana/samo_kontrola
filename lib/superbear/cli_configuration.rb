@@ -1,6 +1,6 @@
 require 'optparse'
 
-class Superbear::Configuration
+class Superbear::CliConfiguration
   attr_reader :executable_name, :files #, :log_file, :only_check_configuration, :verbose
 
   def initialize(executable_name:)

@@ -1,4 +1,4 @@
-require 'json-schema'
+#require 'json-schema'
 
 class Superbear::ServiceChecklist
   class InputDataContract
@@ -30,8 +30,11 @@ class Superbear::ServiceChecklist
   attr_reader :host, :checklist
 
   def initialize(*checklist, **kwargs)
-    stringified_data = JSON.load(JSON.dump(kwargs))
-    validation_result = InputDataContract.call(stringified_data)
+    checklist_json = JSON.load(JSON.dump(kwargs))
+
+    validation_result = InputDataContract.call(checklist_json)
+
+    binding.pry
     raise ParameterError.new(validation_result[:errors].join(", ")) if validation_result[:errors].any?
 
     @host = stringified_data['host']

@@ -1,4 +1,13 @@
 RSpec.describe Superbear::HostChecklist do
+  describe 'SCHEMA' do
+    it 'is valid JSON schema' do
+      # TODO: ruby regex is not valid according to spec
+      expect(JSONSchemer.validate_schema(described_class::SCHEMA).to_a).to match([
+        include({ "error" => "value at `/properties/filename/pattern` does not match format: regex" })
+      ])
+    end
+  end
+
   describe described_class::InputDataContract do
     it 'requires filename and checks correct file extension' do
       result = described_class.call({ filename: 'my_server01.yml', checklist: [] })
@@ -16,44 +25,41 @@ RSpec.describe Superbear::HostChecklist do
 
     it 'fails on superfluous attributes' do
       result = described_class.call({ filename: 'aaa.yml', checklist: [], superfluous: 'test'})
-      expect(result).to match(errors: match([%r{\AThe property '#/' contained undefined properties: 'superfluous' in schema .+\z}]))
+      expect(result[:errors]).to match([
+        include({ "error"=>"object property at `/superfluous` is a disallowed additional property" })
+      ])
     end
   end
 
   it 'raises on invalid parameters' do
     expect do
       described_class.new(filename: 'my_server01.dll', checklist: [])
-    end.to raise_error(described_class::ParameterError, %r{\AThe property '#/filename' value "my_server01.dll" did not match the regex .+\z})
+    end.to raise_error(described_class::ParameterError, 'my_server01.dll: string at `/filename` does not match pattern: \A\w+\.(ya?ml|YA?ML)\z')
   end
 
-  it 'saves filename of checklist' do
+  it 'provides filename of checklist' do
     checklist = described_class.new(filename: 'my_server01.yml', checklist: [])
     expect(checklist.filename).to eq('my_server01.yml')
   end
 
-  it 'loads hosts and checks' do
-    service_checklist = double('service_checklist')
-    allow(Superbear::ServiceChecklist).to receive(:new).and_return(service_checklist)
-
-    data = {
-      'filename' => 'server01.yml',
-      'checklist' => [
-        {
-          'host' => 'example.com',
-          'checklist' => [
-            {
-              'http' => {
-                'status' => 302,
-                'body' => 'This domain is for use in illustrative examples in documents.'
-              }
+  it 'provides items of checklist' do
+    data = [
+      {
+        'host' => 'example.com',
+        'checklist' => [
+          {
+            'http' => {
+              'status' => 302,
+              'body' => 'This domain is for use in illustrative examples in documents.'
             }
-          ]
-        }
-      ]
-    }
+          }
+        ]
+      }
+    ]
 
-    checklist = described_class.new(data)
-    expect(Superbear::ServiceChecklist).to have_received(:new).with(data.dig('checklist', 0))
-    expect(checklist.checklist).to eq([service_checklist])
+    host_checklist = described_class.new(
+      filename: 'my_server01.yml',
+      checklist: data)
+    expect(host_checklist.checklist).to eq(data)
   end
 end

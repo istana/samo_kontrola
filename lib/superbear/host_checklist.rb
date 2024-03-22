@@ -1,55 +1,62 @@
-require 'json-schema'
+require 'json_schemer'
 
 class Superbear::HostChecklist
+  SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "superbear/host_checklist",
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      filename: {
+        type: "string",
+        pattern: '\A\w+\.(ya?ml|YA?ML)\z',
+      },
+      checklist: {
+        type: "array",
+        items: {
+          type: "object",
+          additionalProperties: false,
+          properties: {
+            host: {
+              type: "string",
+            },
+            checklist: {
+              type: "array",
+            },
+          },
+          required: ['host', 'checklist'],
+        }
+      }
+    },
+    required: ['filename', 'checklist'],
+  }.freeze
+
+  class ParameterError < StandardError; end
   class InputDataContract
     def self.call(data)
-      schema = {
-        :"$id" => "superbear/host_checklist",
-        type: :object,
-        properties: {
-          filename: {
-            type: :string,
-            pattern: /\A\w+\.ya?ml\z/i,
-          },
-          checklist: {
-            type: :array,
-            items: {
-              type: :object,
-              properties: {
-                host: {
-                  type: :string,
-                },
-                checklist: {
-                  type: :array,
-                },
-              },
-              required: ['host', 'checklist'],
-            }
-          }
-        },
-        required: ['filename', 'checklist'],
-      }
+      schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: JSON::Validator.fully_validate(schema, data, strict: true)
+        errors: schemer.validate(data).to_a
       }
     end
   end
 
-  class ParameterError < StandardError; end
 
   attr_reader :filename, :checklist
 
   def initialize(data)
-    stringified_data = JSON.load(JSON.dump(data))
-    validation_result = InputDataContract.call(stringified_data)
-    raise ParameterError.new(validation_result[:errors].join(", ")) if validation_result[:errors].any?
+    checklist_json = JSON.load(JSON.dump(data))
+    validation_result = InputDataContract.call(checklist_json)
 
-    @filename = stringified_data['filename']
-    @checklist = stringified_data['checklist']
+    if validation_result[:errors].any?
+      errors = validation_result[:errors]
+        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
 
-    @checklist = @checklist.map do |item|
-      Superbear::ServiceChecklist.new(item)
+      raise ParameterError.new(errors)
     end
+
+    @filename = checklist_json['filename']
+    @checklist = checklist_json['checklist']
   end
 end
