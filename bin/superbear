@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'rspec/core'
+#require 'rspec/core'
 require 'yaml'
 require 'superbear/configuration'
 require 'superbear/version'

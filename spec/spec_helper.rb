@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "superbear"
 require 'rspec/matchers/fail_matchers'
+require 'pry'
 
 # do not truncate error message
 RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil

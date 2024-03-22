@@ -11,7 +11,7 @@ class Superbear::HostChecklist
             type: :string,
             pattern: /\A\w+\.ya?ml\z/i,
           },
-          data: {
+          checklist: {
             type: :array,
             items: {
               type: :object,
@@ -27,27 +27,29 @@ class Superbear::HostChecklist
             }
           }
         },
-        required: ['filename', 'data'],
+        required: ['filename', 'checklist'],
       }
 
-      JSON::Validator.fully_validate(schema, data, strict: true)
+      {
+        errors: JSON::Validator.fully_validate(schema, data, strict: true)
+      }
     end
   end
 
   class ParameterError < StandardError; end
 
-  attr_reader :filename, :items
+  attr_reader :filename, :checklist
 
-  def initialize(**kwargs)
-    stringified_data = JSON.load(JSON.dump(kwargs))
-    errors = InputDataContract.call(stringified_data)
-    raise ParameterError.new(errors.join(", ")) if errors.any?
+  def initialize(data)
+    stringified_data = JSON.load(JSON.dump(data))
+    validation_result = InputDataContract.call(stringified_data)
+    raise ParameterError.new(validation_result[:errors].join(", ")) if validation_result[:errors].any?
 
     @filename = stringified_data['filename']
-    @items = stringified_data['data']
+    @checklist = stringified_data['checklist']
 
-    @items.each do |item|
-      
+    @checklist = @checklist.map do |item|
+      Superbear::ServiceChecklist.new(item)
     end
   end
 end
