@@ -1,45 +1,46 @@
 require 'optparse'
 
 class Superbear::Configuration
-  attr_reader :files, :log_file, :only_check_configuration, :verbose
+  attr_reader :executable_name, :files #, :log_file, :only_check_configuration, :verbose
 
-  def initialize(called_file:)
-    @called_file = called_file
+  def initialize(executable_name:)
+    @executable_name = executable_name
+    parser = cli_parser
 
     begin
-      cli_parser.parse!
+      parser.parse!
     rescue OptionParser::MissingArgument
       puts parser.help
       exit(1)
     end
 
     if ARGV.size == 0
-      puts 'Specify at least one file definition'
+      puts parser.help
       exit(1)
     end
 
-    files = ARGV
+    @files = ARGV
   end
 
   private
 
   def cli_parser
     OptionParser.new do |opts|
-      opts.banner = "Usage: #{@called_file} [files]"
-      opts.on("-v", "--[no-]verbose", "use dot or doc formatter, output contains dots or detailed steps and failed checks") do |value|
-        @verbose = value
-      end
+      opts.banner = "Usage: #{executable_name} file [files]"
+#      opts.on("-v", "--[no-]verbose", "use dot or doc formatter, output contains dots or detailed steps and failed checks") do |value|
+#        @verbose = value
+#      end
 
-      opts.on("-C", "--check-configuration", "check configuration and exit") do |v|
-        @only_check_configuration = value
-      end
+#      opts.on("-C", "--check-configuration", "check configuration and exit") do |v|
+#        @only_check_configuration = value
+#      end
 
-      opts.on("-l", "--log FILE", "log to a file") do |v|
-        @log_file = value
-      end
+#      opts.on("-l", "--log FILE", "log to a file") do |v|
+#        @log_file = value
+#      end
 
       opts.on_tail("--version", "show version") do
-        puts SuperBear::VERSION
+        puts Superbear::VERSION
         exit(1)
       end
 

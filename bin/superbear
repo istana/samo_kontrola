@@ -1,27 +1,24 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-#require 'rspec/core'
 require 'yaml'
 require 'superbear/configuration'
 require 'superbear/version'
 
-RSpec.configure do |config|
-  config.full_backtrace = false
-  config.backtrace_inclusion_patterns = [
-      /superbear/
-  ]
-end
-
-configuration = Superbear::Configuration.new(origin_file: __FILE__)
-#require 'pry'
-#binding.pry
+require 'pry'
+binding.pry
+configuration = Superbear::Configuration.new(executable_name: __FILE__)
 
 
-checklists = configuration.files.reduce([]) do |result, filename|
-  yaml_file = YAML.load_file(filename)
-  checklist = Superbear::Checklist.new(yaml_file)
-end
+
+#checklists = configuration.files.reduce([]) do |result, filename|
+#  yaml_file = YAML.load_file(filename)
+#  checklist = Superbear::Checklist.new(yaml_file)
+#end
+
+
+#checklist.each do ||
+
 =begin
 
 checklist.each do |host_checks|
@@ -160,5 +157,3 @@ end
 
 =end
 
-rundir = File.expand_path('../../rundir', __FILE__)
-RSpec::Core::Runner.run([rundir], $stderr, $stdout)
