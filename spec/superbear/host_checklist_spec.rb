@@ -42,7 +42,7 @@ RSpec.describe Superbear::HostChecklist do
     expect(checklist.filename).to eq('my_server01.yml')
   end
 
-  it 'provides items of checklist' do
+  it 'provides checklist items' do
     data = [
       {
         'host' => 'example.com',

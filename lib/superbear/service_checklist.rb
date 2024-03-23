@@ -1,52 +1,49 @@
-#require 'json-schema'
+require 'json_schemer'
 
 class Superbear::ServiceChecklist
+  SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "superbear/service_checklist",
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      host: {
+        type: "string",
+        # TODO: ipv4, v6, reverse v4, reverse v6, domain, reverse domain
+        #pattern: /\A\w+\.ya?ml\z/i,
+      },
+      checklist: {
+        type: "array",
+      },
+    },
+    required: ['host', 'checklist'],
+  }.freeze
+
+  class ParameterError < StandardError; end
   class InputDataContract
     def self.call(data)
-      schema = {
-        :"$id" => "superbear/service_checklist",
-        type: :object,
-        properties: {
-          host: {
-            type: :string,
-            # TODO: ipv4, v6, reverse v4, reverse v6, domain, reverse domain
-            #pattern: /\A\w+\.ya?ml\z/i,
-          },
-          checklist: {
-            type: :array,
-          },
-        },
-        required: ['host', 'checklist'],
-      }
+      schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: JSON::Validator.fully_validate(schema, data, strict: true)
+        errors: schemer.validate(data).to_a
       }
     end
   end
 
-  class ParameterError < StandardError; end
-
   attr_reader :host, :checklist
 
-  def initialize(*checklist, **kwargs)
-    checklist_json = JSON.load(JSON.dump(kwargs))
-
+  def initialize(data)
+    checklist_json = JSON.load(JSON.dump(data))
     validation_result = InputDataContract.call(checklist_json)
 
-    binding.pry
-    raise ParameterError.new(validation_result[:errors].join(", ")) if validation_result[:errors].any?
+    if validation_result[:errors].any?
+      errors = validation_result[:errors]
+        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
 
-    @host = stringified_data['host']
-    @checklist = stringified_data['checklist']
-
-    @checklist = @checklist.map do |check|
-      plugin = check.keys.first
-
-      defined?(plugin)
-      plugin.constantize::InputDataContract.call(check[check.keys.first])
-      
-      Superbear::ServiceChecklist.new(item)
+      raise ParameterError.new(errors)
     end
+
+    @host = checklist_json['host']
+    @checklist = checklist_json['checklist']
   end
 end
