@@ -2,16 +2,21 @@
 
 require 'bundler/setup'
 require 'yaml'
-require 'superbear/configuration'
+require 'superbear/cli_configuration'
 require 'superbear/version'
 require 'superbear/host_checklist'
+require 'superbear/service_checklist'
 
 require 'pry'
-configuration = Superbear::Configuration.new(executable_name: __FILE__)
+configuration = Superbear::CliConfiguration.new(executable_name: __FILE__)
 
-checklists = configuration.files.reduce([]) do |result, filename|
- yaml_file = YAML.safe_load_file(filename)
- checklist = Superbear::HostChecklist.new(yaml_file)
+service_checklists = configuration.files.reduce([]) do |result, filename|
+  yaml_file = YAML.safe_load_file(filename)
+  host_checklist = Superbear::HostChecklist.new(filename:, checklist: yaml_file)
+
+  host_checklist.checklist.each do |service_checklist_data|
+    result << Superbear::ServiceChecklist.new(service_checklist_data)
+  end
 end
 
 binding.pry
@@ -19,6 +24,9 @@ binding.pry
 #checklist.each do ||
 
 =begin
+
+      defined?(plugin)
+      plugin.constantize::InputDataContract.call(check[check.keys.first])
 
 checklist.each do |host_checks|
   RSpec.describe host_checks["host"] do

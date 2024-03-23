@@ -1,1 +1,5 @@
-example.com
+- host: example.com
+  checklist:
+    - type: http
+      status: 302
+      body: 'This domain is for use in illustrative examples in documents.'
