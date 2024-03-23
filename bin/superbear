@@ -6,6 +6,7 @@ require 'superbear/cli_configuration'
 require 'superbear/version'
 require 'superbear/host_checklist'
 require 'superbear/service_checklist'
+require 'superbear/plugins'
 
 require 'pry'
 configuration = Superbear::CliConfiguration.new(executable_name: __FILE__)
@@ -17,17 +18,30 @@ service_checklists = configuration.files.reduce([]) do |result, filename|
   host_checklist.checklist.each do |service_checklist_data|
     result << Superbear::ServiceChecklist.new(service_checklist_data)
   end
+
+  result
 end
+
+checks = service_checklists.reduce([]) do |result, checklist|
+  host = checklist.host
+
+  checklist.checklist.each do |check|
+    type = check['type']
+
+    plugin = Object.const_get("Superbear::Plugins::#{type.capitalize}")
+    result << plugin.new(check)
+  end
+
+  result
+end
+
+checks.each {|check| check.call }
 
 binding.pry
 
 #checklist.each do ||
 
 =begin
-
-      defined?(plugin)
-      plugin.constantize::InputDataContract.call(check[check.keys.first])
-
 checklist.each do |host_checks|
   RSpec.describe host_checks["host"] do
     if host_checks["ssh"]
