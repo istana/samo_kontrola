@@ -5,11 +5,13 @@ require 'yaml'
 require 'superbear/cli_configuration'
 require 'superbear/version'
 require 'superbear/host_checklist'
+require 'superbear/logger'
 require 'superbear/service_checklist'
 require 'superbear/plugins'
 
 require 'pry'
 configuration = Superbear::CliConfiguration.new(executable_name: __FILE__)
+logger = Superbear::Logger.new
 
 service_checklists = configuration.files.reduce([]) do |result, filename|
   yaml_file = YAML.safe_load_file(filename)
@@ -23,23 +25,18 @@ service_checklists = configuration.files.reduce([]) do |result, filename|
 end
 
 checks = service_checklists.reduce([]) do |result, checklist|
-  host = checklist.host
-
   checklist.checklist.each do |check|
-    type = check['type']
-
-    plugin = Object.const_get("Superbear::Plugins::#{type.capitalize}")
-    result << plugin.new(check)
+    plugin = Object.const_get("Superbear::Plugins::#{check['type'].capitalize}")
+    result << plugin.new(
+      data: check.merge('host' => checklist.host),
+      logger: logger,
+    )
   end
 
   result
 end
 
 checks.each {|check| check.call }
-
-binding.pry
-
-#checklist.each do ||
 
 =begin
 checklist.each do |host_checks|
@@ -52,27 +49,6 @@ checklist.each do |host_checks|
             keys = SamoKontrola::Ssh::Fingerprint.(host: host_checks["host"])
             expect(keys.size).to eq(1)
             expect(keys.first).to eq(ssh_checks["fingerprint"])
-          end
-        end
-      end
-    end
-
-    if host_checks["http"]
-      http_checks = host_checks["http"]
-
-      describe 'HTTP' do
-        uri = URI("http://#{host_checks['host']}")
-        response = Net::HTTP.get_response(uri)
-
-        if http_checks["content"]
-          it "the root URL body contains \"#{http_checks['content']}\"" do
-            expect(response.body).to include(http_checks["content"])
-          end
-        end
-
-        if http_checks["status"]
-          it "the root URL returns HTTP code \"#{http_checks['status'].to_i}\"" do
-            expect(response.code.to_i).to eq(http_checks["status"].to_i)
           end
         end
       end

@@ -1,7 +1,7 @@
 require 'json_schemer'
 require 'net/http'
 
-class Superbear::Plugins::Http
+class Superbear::Plugins::Https
   SCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "superbear/plugins/http",
@@ -57,7 +57,8 @@ class Superbear::Plugins::Http
   end
 
   def call
-    request = Net::HTTP.new(@host)
+    request = Net::HTTP.new(@host, Net::HTTP.https_default_port)
+    request.use_ssl = true
     request.start
     response = request.get("/")
     status = response.code
@@ -70,7 +71,7 @@ class Superbear::Plugins::Http
         @logger.write(
           host: @host,
           success: true,
-          plugin: 'http',
+          plugin: 'https',
           attribute: 'status',
           message: "Expected #{@status} matches received #{status}"
         )
@@ -78,7 +79,7 @@ class Superbear::Plugins::Http
         @logger.write(
           host: @host,
           success: false,
-          plugin: 'http',
+          plugin: 'https',
           attribute: 'status',
           message: "Expected #{@status} does not match received #{status}"
         )
@@ -90,7 +91,7 @@ class Superbear::Plugins::Http
         @logger.write(
           host: @host,
           success: true,
-          plugin: 'http',
+          plugin: 'https',
           attribute: 'body',
           message: "Expected #{@body} is present in received body"
         )
@@ -98,7 +99,7 @@ class Superbear::Plugins::Http
         @logger.write(
           host: @host,
           success: false,
-          plugin: 'http',
+          plugin: 'https',
           attribute: 'body',
           message: "Expected #{@body} isdoes not contain received #{body}"
         )
