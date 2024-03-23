@@ -9,7 +9,7 @@ class Superbear::HostChecklist
     properties: {
       filename: {
         type: "string",
-        pattern: '\A\w+\.(ya?ml|YA?ML)\z',
+        pattern: '\A[\w/]+\.(ya?ml|YA?ML)\z',
       },
       checklist: {
         type: "array",

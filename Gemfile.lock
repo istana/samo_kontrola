@@ -3,6 +3,7 @@ PATH
   specs:
     superbear (0.1.0)
       json_schemer
+      net-ssh
 
 GEM
   remote: https://rubygems.org/
@@ -19,11 +20,12 @@ GEM
       regexp_parser (~> 2.0)
       simpleidn (~> 0.2)
     method_source (1.0.0)
+    net-ssh (7.2.1)
     open3 (0.2.1)
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    rake (13.0.6)
+    rake (13.1.0)
     regexp_parser (2.9.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
@@ -48,11 +50,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 2.0)
+  bundler
   open3
   pry
   rake
-  rspec (~> 3.0)
+  rspec
   superbear!
 
 BUNDLED WITH

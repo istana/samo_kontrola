@@ -1,8 +1,0 @@
-- host: myrtana.sk
-  checklist:
-    - type: http
-      status: 301
-      body: '<p>The document has moved <a href="https://myrtana.sk/">here</a>.</p>'
-    - type: https
-      status: 200
-      body: '<div class="oni-logo"><a href="https://myrtana.sk/">myrtana.sk</a></div>'
