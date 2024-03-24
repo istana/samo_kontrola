@@ -39,10 +39,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "json_schemer"
+  spec.add_dependency "dnsruby"
+  spec.add_dependency "net-ssh"
 
   #spec.add_dependency "whois-parser", "~> 1.2"
-  #spec.add_dependency "dnsruby", "~> 1.61"
-  spec.add_dependency "net-ssh"
   #spec.add_dependency "dry-validation"
   #spec.add_dependency "ed25519"
   #spec.add_dependency "bcrypt_pbkdf"

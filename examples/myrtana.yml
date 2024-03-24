@@ -1,42 +1,41 @@
 - host: myrtana.sk
   checklist:
-    - type: http
-      status: 301
-      body: '<p>The document has moved <a href="https://myrtana.sk/">here</a>.</p>'
-    - type: https
-      status: 200
-      body: '<div class="oni-logo"><a href="https://myrtana.sk/">myrtana.sk</a></div>'
-    - type: ssh
-      keys:
-        - algorithm: ecdsa-sha2-nistp256
-          fingerprint: "f3:b0:0c:be:6b:ed:aa:f6:c7:91:cb:11:99:f1:48:2b"
-
-#   dns:
-#     IN:
-#       A:
-#         - 37.205.11.69
-#       AAAA:
-#         - 2a03:3b40:100::1:80
-#       MX:
-#         - preference: 10
-#           exchange: starz.myrtana.sk
-#       NS:
-#         - ns1.myrtana.sk
-#         - ns2.myrtana.sk
-#       SOA:
-#         mname: ns1.myrtana.sk
-#         rname: root.myrtana.sk
-#         serial: 2017020701
-#         refresh: 3600
-#         retry: 600
-#         expire: 2419200
-#         minimum_ttl: 3600
-#       TXT:
-#         - google-site-verification=57FrWQwnIsfvZbY_Ktctp04p2gDg0iTlJS518DBugUc
-#         - v=spf1 mx -all
-
-# - host: 69.11.205.37.in-addr.arpa
-#   dns:
-#     IN:
-#       PTR:
-#         - starz.myrtana.sk
+    # - type: http
+    #   status: 301
+    #   body: '<p>The document has moved <a href="https://myrtana.sk/">here</a>.</p>'
+    # - type: https
+    #   status: 200
+    #   body: '<div class="oni-logo"><a href="https://myrtana.sk/">myrtana.sk</a></div>'
+    # - type: ssh
+    #   keys:
+    #     - algorithm: ecdsa-sha2-nistp256
+    #       fingerprint: "f3:b0:0c:be:6b:ed:aa:f6:c7:91:cb:11:99:f1:48:2b"
+    - type: dns
+      IN:
+        A:
+          - 37.205.11.69
+        AAAA:
+          - 2a03:3b40:100::1:80
+        MX:
+          - preference: 10
+            exchange: starz.myrtana.sk
+        NS:
+          - ns1.myrtana.sk
+          - ns2.myrtana.sk
+        SOA:
+          - mname: ns1.myrtana.sk
+            rname: root.myrtana.sk
+            serial: 2020100901
+            refresh: 3600
+            retry: 600
+            expire: 2419200
+            minimum_ttl: 3600
+        TXT:
+          - google-site-verification=57FrWQwnIsfvZbY_Ktctp04p2gDg0iTlJS518DBugUc
+          - v=spf1 mx -all
+- host: 69.11.205.37.in-addr.arpa
+  checklist:
+    - type: dns
+      IN:
+        PTR:
+          - starz.myrtana.sk
