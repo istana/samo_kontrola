@@ -38,9 +38,9 @@ TODO: Delete this and the text above, and describe your gem
 ## Run
 
 - clone
-- `bin/samokontrola -f examples/myrtana.yml`
+- `bin/superbear examples/myrtana.yml [files]`
 
-## Installation
+## Installation [TO BE DONE]
 
 Add this line to your application's Gemfile:
 
@@ -72,7 +72,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 
 ## License
 
-Copyright (C) 2020-2022 Ivan Stana
+Copyright (C) 2020-2024 Ivan Stana
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
