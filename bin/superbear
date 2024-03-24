@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
-require 'bundler/setup'
-require 'yaml'
-require 'superbear/cli_configuration'
-require 'superbear/version'
-require 'superbear/host_checklist'
-require 'superbear/logger'
-require 'superbear/service_checklist'
-require 'superbear/plugins'
+require "bundler/setup"
+require "yaml"
+require "superbear/cli_configuration"
+require "superbear/version"
+require "superbear/host_checklist"
+require "superbear/logger"
+require "superbear/service_checklist"
+require "superbear/plugins"
 
-require 'pry'
+require "pry"
 configuration = Superbear::CliConfiguration.new(executable_name: __FILE__)
 logger = Superbear::Logger.new
 
@@ -28,12 +28,12 @@ checks = service_checklists.reduce([]) do |result, checklist|
   checklist.checklist.each do |check|
     plugin = Object.const_get("Superbear::Plugins::#{check['type'].capitalize}")
     result << plugin.new(
-      data: check.merge('host' => checklist.host),
-      logger: logger,
+      data: check.merge("host" => checklist.host),
+      logger:,
     )
   end
 
   result
 end
 
-checks.each {|check| check.call }
+checks.each(&:call)

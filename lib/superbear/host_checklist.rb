@@ -1,4 +1,4 @@
-require 'json_schemer'
+require "json_schemer"
 
 class Superbear::HostChecklist
   SCHEMA = {
@@ -24,39 +24,39 @@ class Superbear::HostChecklist
               type: "array",
             },
           },
-          required: ['host', 'checklist'],
-        }
-      }
+          required: %w[host checklist],
+        },
+      },
     },
-    required: ['filename', 'checklist'],
+    required: %w[filename checklist],
   }.freeze
 
   class ParameterError < StandardError; end
+
   class InputDataContract
     def self.call(data)
       schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: schemer.validate(data).to_a
+        errors: schemer.validate(data).to_a,
       }
     end
   end
 
-
   attr_reader :filename, :checklist
 
   def initialize(data)
-    checklist_json = JSON.load(JSON.dump(data))
+    checklist_json = JSON.parse(JSON.dump(data))
     validation_result = InputDataContract.call(checklist_json)
 
     if validation_result[:errors].any?
       errors = validation_result[:errors]
-        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
+        .map { |error| "#{error['data']}: #{error['error']}" }.join(", ")
 
-      raise ParameterError.new(errors)
+      raise ParameterError, errors
     end
 
-    @filename = checklist_json['filename']
-    @checklist = checklist_json['checklist']
+    @filename = checklist_json["filename"]
+    @checklist = checklist_json["checklist"]
   end
 end

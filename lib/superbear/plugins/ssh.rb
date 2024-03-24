@@ -1,5 +1,5 @@
-require 'json_schemer'
-require 'net/ssh'
+require "json_schemer"
+require "net/ssh"
 
 class Superbear::Plugins::Ssh
   SCHEMA = {
@@ -21,8 +21,8 @@ class Superbear::Plugins::Ssh
               type: "string",
             },
           },
-          required: ['algorithm', 'fingerprint'],
-        }
+          required: %w[algorithm fingerprint],
+        },
       },
       host: {
         type: "string",
@@ -31,16 +31,17 @@ class Superbear::Plugins::Ssh
         type: "string",
       },
     },
-    required: ['host', 'type'],
+    required: %w[host type],
   }.freeze
 
   class ParameterError < StandardError; end
+
   class InputDataContract
     def self.call(data)
       schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: schemer.validate(data).to_a
+        errors: schemer.validate(data).to_a,
       }
     end
   end
@@ -48,19 +49,19 @@ class Superbear::Plugins::Ssh
   attr_reader :body, :host, :status, :type
 
   def initialize(data:, logger:)
-    checklist_json = JSON.load(JSON.dump(data))
+    checklist_json = JSON.parse(JSON.dump(data))
     validation_result = InputDataContract.call(checklist_json)
 
     if validation_result[:errors].any?
       errors = validation_result[:errors]
-        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
+        .map { |error| "#{error['data']}: #{error['error']}" }.join(", ")
 
-      raise ParameterError.new(errors)
+      raise ParameterError, errors
     end
 
-    @keys = checklist_json['keys']
-    @host = checklist_json['host']
-    @type = checklist_json['type']
+    @keys = checklist_json["keys"]
+    @host = checklist_json["host"]
+    @type = checklist_json["type"]
 
     @logger = logger
   end
@@ -76,37 +77,36 @@ class Superbear::Plugins::Ssh
     end
 
     @keys.each do |key|
-      server_key = ssh_keys.find{|ssh_key| ssh_key["ssh_signature_type"] == key["algorithm"]}
+      server_key = ssh_keys.find { |ssh_key| ssh_key["ssh_signature_type"] == key["algorithm"] }
 
       if !server_key
         @logger.write(
           host: @host,
           success: false,
-          plugin: 'ssh',
-          attribute: 'algorithm',
-          message: "Expected to find #{key['algorithm']} among server SSH keys"
+          plugin: "ssh",
+          attribute: "algorithm",
+          message: "Expected to find #{key['algorithm']} among server SSH keys",
         )
 
       else
-        if key['fingerprint'] == server_key['fingerprint']
+        if key["fingerprint"] == server_key["fingerprint"]
           @logger.write(
             host: @host,
             success: true,
-            plugin: 'ssh',
-            attribute: 'fingerprint',
-            message: "Expected #{key['fingerprint']} matches received #{server_key['fingerprint']}"
+            plugin: "ssh",
+            attribute: "fingerprint",
+            message: "Expected #{key['fingerprint']} matches received #{server_key['fingerprint']}",
           )
         else
           @logger.write(
             host: @host,
             success: false,
-            plugin: 'ssh',
-            attribute: 'fingerprint',
-            message: "Expected #{key['fingerprint']} does not match received #{server_key['fingerprint']}"
+            plugin: "ssh",
+            attribute: "fingerprint",
+            message: "Expected #{key['fingerprint']} does not match received #{server_key['fingerprint']}",
           )
         end
       end
     end
-
   end
 end

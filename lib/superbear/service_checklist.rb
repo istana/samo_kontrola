@@ -1,4 +1,4 @@
-require 'json_schemer'
+require "json_schemer"
 
 class Superbear::ServiceChecklist
   SCHEMA = {
@@ -10,22 +10,23 @@ class Superbear::ServiceChecklist
       host: {
         type: "string",
         # TODO: ipv4, v6, reverse v4, reverse v6, domain, reverse domain
-        #pattern: /\A\w+\.ya?ml\z/i,
+        # pattern: /\A\w+\.ya?ml\z/i,
       },
       checklist: {
         type: "array",
       },
     },
-    required: ['host', 'checklist'],
+    required: %w[host checklist],
   }.freeze
 
   class ParameterError < StandardError; end
+
   class InputDataContract
     def self.call(data)
       schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: schemer.validate(data).to_a
+        errors: schemer.validate(data).to_a,
       }
     end
   end
@@ -33,17 +34,17 @@ class Superbear::ServiceChecklist
   attr_reader :host, :checklist
 
   def initialize(data)
-    checklist_json = JSON.load(JSON.dump(data))
+    checklist_json = JSON.parse(JSON.dump(data))
     validation_result = InputDataContract.call(checklist_json)
 
     if validation_result[:errors].any?
       errors = validation_result[:errors]
-        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
+        .map { |error| "#{error['data']}: #{error['error']}" }.join(", ")
 
-      raise ParameterError.new(errors)
+      raise ParameterError, errors
     end
 
-    @host = checklist_json['host']
-    @checklist = checklist_json['checklist']
+    @host = checklist_json["host"]
+    @checklist = checklist_json["checklist"]
   end
 end

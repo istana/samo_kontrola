@@ -5,7 +5,14 @@ require:
   - rubocop-rspec
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 3.3
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -18,3 +25,12 @@ Style/BlockComments:
 
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
+
+Style/EachWithObject:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: consistent_comma

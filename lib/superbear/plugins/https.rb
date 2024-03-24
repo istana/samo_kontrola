@@ -1,5 +1,5 @@
-require 'json_schemer'
-require 'net/http'
+require "json_schemer"
+require "net/http"
 
 class Superbear::Plugins::Https
   SCHEMA = {
@@ -21,16 +21,17 @@ class Superbear::Plugins::Https
         type: "string",
       },
     },
-    required: ['host', 'type'],
+    required: %w[host type],
   }.freeze
 
   class ParameterError < StandardError; end
+
   class InputDataContract
     def self.call(data)
       schemer = JSONSchemer.schema(SCHEMA, regexp_resolver: "ruby")
 
       {
-        errors: schemer.validate(data).to_a
+        errors: schemer.validate(data).to_a,
       }
     end
   end
@@ -38,20 +39,20 @@ class Superbear::Plugins::Https
   attr_reader :body, :host, :status, :type
 
   def initialize(data:, logger:)
-    checklist_json = JSON.load(JSON.dump(data))
+    checklist_json = JSON.parse(JSON.dump(data))
     validation_result = InputDataContract.call(checklist_json)
 
     if validation_result[:errors].any?
       errors = validation_result[:errors]
-        .map{|error| "#{error['data']}: #{error['error']}"}.join(", ")
+        .map { |error| "#{error['data']}: #{error['error']}" }.join(", ")
 
-      raise ParameterError.new(errors)
+      raise ParameterError, errors
     end
 
-    @body = checklist_json['body']
-    @host = checklist_json['host']
-    @status = checklist_json['status']
-    @type = checklist_json['type']
+    @body = checklist_json["body"]
+    @host = checklist_json["host"]
+    @status = checklist_json["status"]
+    @type = checklist_json["type"]
 
     @logger = logger
   end
@@ -63,7 +64,7 @@ class Superbear::Plugins::Https
     response = request.get("/")
     status = response.code
     body = response.body
-    ip_address = request.ipaddr
+    request.ipaddr
     request.finish
 
     if @status
@@ -71,17 +72,17 @@ class Superbear::Plugins::Https
         @logger.write(
           host: @host,
           success: true,
-          plugin: 'https',
-          attribute: 'status',
-          message: "Expected #{@status} matches received #{status}"
+          plugin: "https",
+          attribute: "status",
+          message: "Expected #{@status} matches received #{status}",
         )
       else
         @logger.write(
           host: @host,
           success: false,
-          plugin: 'https',
-          attribute: 'status',
-          message: "Expected #{@status} does not match received #{status}"
+          plugin: "https",
+          attribute: "status",
+          message: "Expected #{@status} does not match received #{status}",
         )
       end
     end
@@ -91,17 +92,17 @@ class Superbear::Plugins::Https
         @logger.write(
           host: @host,
           success: true,
-          plugin: 'https',
-          attribute: 'body',
-          message: "Expected #{@body} is present in received body"
+          plugin: "https",
+          attribute: "body",
+          message: "Expected #{@body} is present in received body",
         )
       else
         @logger.write(
           host: @host,
           success: false,
-          plugin: 'https',
-          attribute: 'body',
-          message: "Expected #{@body} isdoes not contain received #{body}"
+          plugin: "https",
+          attribute: "body",
+          message: "Expected #{@body} isdoes not contain received #{body}",
         )
       end
     end
